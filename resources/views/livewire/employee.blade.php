@@ -18,6 +18,7 @@
              </div>
          </div>
      @endif
+
      <!-- START FORM -->
      <div class="my-3 p-3 bg-body rounded shadow-sm">
          <form>
@@ -63,21 +64,37 @@
          <div class="py-3">
              <input type="text" class="form-control mb-3 w-25" placeholder="Cari..." wire:model.live='katakunci' />
 
+             @if ($employee_selected_id)
+                 {{-- <ul>
+                     @foreach ($employee_selected_id as $value)
+                         <li>{{ $value }}</li>
+                     @endforeach
+                 </ul> --}}
+                 <a wire:click="delete_confirm()" class="btn btn-danger mb-3  btn-sm" data-bs-toggle="modal"
+                     data-bs-target="#modalId">Hapus {{ count($employee_selected_id) }} Data</a>
+             @endif
          </div>
          {{ $dataEmployees->links() }}
-         <table class="table table-striped">
+         <table class="table table-striped table-sortable">
              <thead>
                  <tr>
+                     <th></th>
                      <th class="col-md-1">No</th>
-                     <th class="col-md-4">Nama</th>
-                     <th class="col-md-3">Email</th>
-                     <th class="col-md-2">Alamat</th>
+                     <th class="col-md-4 sort @if ($namaColumn == 'nama') {{ $sortDirection }} @endif"
+                         wire:click="sort('nama')">Nama</th>
+                     <th class="col-md-3 sort @if ($namaColumn == 'email') {{ $sortDirection }} @endif"
+                         wire:click="sort('email')">Email</th>
+                     <th class="col-md-2 sort @if ($namaColumn == 'alamat') {{ $sortDirection }} @endif"
+                         wire:click="sort('alamat')">Alamat</th>
                      <th class="col-md-2">Aksi</th>
                  </tr>
              </thead>
              <tbody>
                  @foreach ($dataEmployees as $key => $item)
                      <tr>
+                         <td><input type="checkbox" wire:key='{{ $item->id }}' value="{{ $item->id }}"
+                                 wire:model.live='employee_selected_id'>
+                         </td>
                          <td>{{ $dataEmployees->firstItem() + $key }}</td>
                          <td>{{ $item->nama }}</td>
                          <td>{{ $item->email }}</td>
@@ -121,12 +138,5 @@
          </div>
      </div>
 
-     <!-- Optional: Place to the bottom of scripts -->
-     <script>
-         const myModal = new bootstrap.Modal(
-             document.getElementById("modalId"),
-             options,
-         );
-     </script>
 
  </div>
